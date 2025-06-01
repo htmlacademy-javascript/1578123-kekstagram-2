@@ -47,6 +47,6 @@ const createRandomPhotosData = (length = 0) =>
     description: 'Ещё одна фотография',
     likes: getRandomInt(15, 200),
     comments: createRandomCommentsData(getRandomInt(0, 30))
-}));
+  }));
 
 createRandomPhotosData(PHOTOS_COUNT);
