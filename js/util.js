@@ -7,3 +7,6 @@ export const getRandomInt = (a, b) => {
 
 export const getRandomArrayElement = (array) =>
   array[getRandomInt(0, array.length - 1)];
+
+export const createCustomLengthArray = (length = 0, cb = () => {}) =>
+  Array.from({ length }, (_, i) => cb(i + 1));

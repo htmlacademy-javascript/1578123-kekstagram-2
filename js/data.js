@@ -1,4 +1,4 @@
-import { getRandomArrayElement, getRandomInt } from './util';
+import { createCustomLengthArray, getRandomArrayElement, getRandomInt } from './util';
 
 const PHOTOS_COUNT = 25;
 
@@ -25,40 +25,36 @@ const NAMES = [
   'Юлия'
 ];
 
-const likesCount = {
+const LikesCount = {
   MIN: 15,
   MAX: 200
 };
 
-const commentsCount = {
+const CommentsCount = {
   MIN: 0,
   MAX: 30
 };
 
-const avatarsCount = {
+const AvatarsCount = {
   MIN: 1,
   MAX: 6
 };
 
 const createCommentObject = (id = 0) => ({
   id,
-  avatar: `img/avatar-${getRandomInt(avatarsCount.MIN, avatarsCount.MAX)}.svg`,
+  avatar: `img/avatar-${getRandomInt(AvatarsCount.MIN, AvatarsCount.MAX)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES)
 });
-
-const createCommentsArray = (length = 0) => Array.from({ length }, (_, i) => createCommentObject(i + 1));
 
 const createPhotoObject = (id = 0) => ({
   id,
   url: `photos/${id}.jpg`,
   description: `Фотография №${id}`,
-  likes: getRandomInt(likesCount.MIN, likesCount.MAX),
-  comments: createCommentsArray(getRandomInt(commentsCount.MIN, commentsCount.MAX))
+  likes: getRandomInt(LikesCount.MIN, LikesCount.MAX),
+  comments: createCustomLengthArray(getRandomInt(CommentsCount.MIN, CommentsCount.MAX), createCommentObject)
 });
 
-const createPhotosArray = (length = 0) => Array.from({ length }, (_, i) => createPhotoObject(i + 1));
-
-const createMockData = () => createPhotosArray(PHOTOS_COUNT);
+const createMockData = () => createCustomLengthArray(PHOTOS_COUNT, createPhotoObject);
 
 export { createMockData };
