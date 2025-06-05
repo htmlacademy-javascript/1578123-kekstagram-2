@@ -1,3 +1,6 @@
-import { createMockData } from './data';
+import { createMockData } from './data.js';
+import { createThumbnails } from './thumbnails.js';
 
-createMockData();
+const photos = createMockData();
+
+createThumbnails(photos);
