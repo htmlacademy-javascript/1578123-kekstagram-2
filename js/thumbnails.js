@@ -1,5 +1,8 @@
-const createThumbnailElement = (data, template) => {
-  const { url, description, comments, likes } = data;
+import { createFragment } from './util';
+
+
+const renderThumbnailElement = (data, template) => {
+  const { url, description, comments, likes, id } = data;
 
   const element = template.cloneNode(true);
   const image = element.querySelector('.picture__img');
@@ -9,18 +12,17 @@ const createThumbnailElement = (data, template) => {
 
   element.querySelector('.picture__comments').textContent = comments.length;
   element.querySelector('.picture__likes').textContent = likes;
+  element.dataset.id = id;
 
   return element;
 };
 
-const createThumbnails = (photosData) => {
-  const fragment = document.createDocumentFragment();
-
+const renderThumbnails = (postData) => {
   const container = document.querySelector('.pictures');
   const template = document.querySelector('#picture').content.querySelector('.picture');
+  const fragment = createFragment(postData, template, renderThumbnailElement);
 
-  fragment.append(...photosData.map((currentPhotoItem) => createThumbnailElement(currentPhotoItem, template)));
   container.append(fragment);
 };
 
-export { createThumbnailElement, createThumbnails };
+export { renderThumbnails };

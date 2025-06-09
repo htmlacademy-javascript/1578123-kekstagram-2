@@ -1,6 +1,8 @@
 import { createMockData } from './data.js';
-import { createThumbnails } from './thumbnails.js';
+import { renderThumbnails } from './thumbnails.js';
+import { setSinglePost } from './post.js';
 
-const photos = createMockData();
+const postsData = createMockData();
 
-createThumbnails(photos);
+renderThumbnails(postsData);
+setSinglePost(postsData);
