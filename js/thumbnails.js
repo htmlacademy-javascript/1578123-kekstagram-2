@@ -1,8 +1,9 @@
+import { openPost } from './post';
 import { createFragment } from './util';
 
 
 const renderThumbnailElement = (data, template) => {
-  const { url, description, comments, likes, id } = data;
+  const { url, description, comments, likes } = data;
 
   const element = template.cloneNode(true);
   const image = element.querySelector('.picture__img');
@@ -12,7 +13,14 @@ const renderThumbnailElement = (data, template) => {
 
   element.querySelector('.picture__comments').textContent = comments.length;
   element.querySelector('.picture__likes').textContent = likes;
-  element.dataset.id = id;
+
+  const onThumbnailElementClick = (evt) => {
+    evt.preventDefault();
+
+    openPost(data);
+  };
+
+  element.addEventListener('click', onThumbnailElementClick);
 
   return element;
 };
