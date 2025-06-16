@@ -5,8 +5,6 @@ export const getRandomInt = (a, b) => {
   return Math.floor(Math.random() * (end - start + 1)) + start;
 };
 
-export const getArrayItemById = (array = [], id = '') => array.find((item) => String(item.id) === String(id));
-
 export const getRandomArrayElement = (array) =>
   array[getRandomInt(0, array.length - 1)];
 
@@ -22,3 +20,9 @@ export const createFragment = (data, template, cb) => {
 };
 
 export const isEscKey = (evt) => evt.key === 'Escape';
+
+export const toggleClass = (element, className = '') => {
+  if (element) {
+    element.classList.toggle(className);
+  }
+};

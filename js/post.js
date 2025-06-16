@@ -1,4 +1,4 @@
-import { createFragment, isEscKey, getArrayItemById } from './util.js';
+import { createFragment, isEscKey, toggleClass } from './util.js';
 
 const COMMENTS_SHOWN_COUNT = 5;
 
@@ -10,7 +10,6 @@ const likesElement = postElement.querySelector('.likes-count');
 
 const captionElement = postElement.querySelector('.social__caption');
 
-const commentsCountElement = postElement.querySelector('.social__comment-count');
 const commentsShownElement = postElement.querySelector('.social__comment-shown-count');
 const commentsTotalElement = postElement.querySelector('.social__comment-total-count');
 
@@ -21,7 +20,7 @@ const commentsContainer = postElement.querySelector('.social__comments');
 const commentTemplate = commentsContainer.querySelector('.social__comment');
 
 let visibleCommentsCount = COMMENTS_SHOWN_COUNT;
-let postData = null;
+let postData;
 
 function renderPost() {
   imageElement.src = postData.url;
@@ -31,43 +30,24 @@ function renderPost() {
   renderCommentsCount();
   renderCommentsList();
   renderCommentsLoader();
-
-  commentsCountElement.classList.add('hiddem');
 }
 
-function openPost() {
+function openPost(data) {
+  postData = data;
+
   renderPost(postData);
 
-  postElement.classList.remove('hidden');
-  document.body.classList.add('modal-opent');
+  toggleModal();
 
-  closePostElement.addEventListener('click', onClosePostElementClick);
   document.addEventListener('keydown', onDocumentKeyDown);
 }
 
 function closePost() {
-  postElement.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-
   visibleCommentsCount = COMMENTS_SHOWN_COUNT;
 
-  closePostElement.removeEventListener('click', onClosePostElementClick);
+  toggleModal();
+
   document.removeEventListener('keydown', onDocumentKeyDown);
-}
-
-function setSinglePost(data) {
-  const thumbnailContainer = document.querySelector('.pictures');
-
-  thumbnailContainer.addEventListener('click', (evt) => {
-    const thumbnailElement = evt.target.closest('.picture');
-
-    if (thumbnailElement) {
-      postData = getArrayItemById(data, thumbnailElement.dataset.id);
-      visibleCommentsCount = postData.comments.length;
-
-      openPost(postData);
-    }
-  });
 }
 
 function renderCommentElement({ avatar, message, name }, template) {
@@ -96,10 +76,16 @@ function renderCommentsList() {
 function renderCommentsLoader() {
   if (visibleCommentsCount >= postData.comments.length) {
     commentsLoaderElement.classList.add('hidden');
-  } else {
-    commentsLoaderElement.classList.remove('hidden');
-    commentsLoaderElement.addEventListener('click', onCommentsLoaderClick, { once: true });
+
+    return;
   }
+
+  commentsLoaderElement.classList.remove('hidden');
+}
+
+function toggleModal () {
+  toggleClass(postElement, 'hidden');
+  toggleClass(document.body, 'modal-open');
 }
 
 function onCommentsLoaderClick() {
@@ -122,4 +108,7 @@ function onClosePostElementClick() {
   closePost();
 }
 
-export { setSinglePost };
+commentsLoaderElement.addEventListener('click', onCommentsLoaderClick);
+closePostElement.addEventListener('click', onClosePostElementClick);
+
+export { openPost };
