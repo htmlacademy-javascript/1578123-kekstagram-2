@@ -1,5 +1,5 @@
-import { openPost } from './post';
-import { createFragment } from './util';
+import { openPost } from './post.js';
+import { createFragment } from './util.js';
 
 
 const renderThumbnailElement = (data, template) => {
