@@ -1,7 +1,11 @@
-import { createMockData } from './data.js';
+import { getData } from './api.js';
+import { onLoadDataError } from './notifications.js';
 import { renderThumbnails } from './thumbnails.js';
 import {initUploadForm} from './upload-form.js';
 
-renderThumbnails(createMockData().slice());
+getData()
+  .then((data) => renderThumbnails(data.slice()))
+  .catch((onLoadDataError));
+
 initUploadForm();
 

@@ -1,16 +1,3 @@
-export const getRandomInt = (a, b) => {
-  const start = Math.ceil(Math.min(a, b));
-  const end = Math.floor(Math.max(a, b));
-
-  return Math.floor(Math.random() * (end - start + 1)) + start;
-};
-
-export const getRandomArrayElement = (array) =>
-  array[getRandomInt(0, array.length - 1)];
-
-export const createCustomLengthArray = (length = 0, cb = () => {}) =>
-  Array.from({ length }, (_, i) => cb(i + 1));
-
 export const createFragment = (data, template, cb) => {
   const fragment = document.createDocumentFragment();
 
@@ -25,4 +12,14 @@ export const toggleClass = (element, className = '') => {
   if (element) {
     element.classList.toggle(className);
   }
+};
+
+export const debounce = (cb, delay) => {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => cb.apply(this, rest), delay);
+  };
 };

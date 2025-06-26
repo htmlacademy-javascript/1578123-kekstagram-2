@@ -1,6 +1,8 @@
 import { initValidator } from './form-validator.js';
 import { initImageEditor, resetImageEditor } from './image-editor.js';
 import { toggleClass, isEscKey } from './util.js';
+import { sendData } from './api.js';
+import { onSendDataSuccess, onSendDataError } from './notifications.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadInputElement = uploadForm.querySelector('.img-upload__input');
@@ -17,29 +19,38 @@ const toggleModal = () => {
   toggleClass(document.body, 'modal-open');
 };
 
+const blockSubmitButton = () => {
+  uploadButtonElement.disabled = true;
+};
+
+const unblockSubmitButton = () => {
+  uploadButtonElement.disabled = false;
+};
+
 const openForm = () => {
   toggleModal();
 
-  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('keydown', onEscKeydown);
 };
 
 const closeForm = () => {
   uploadInputElement.value = '';
 
   uploadForm.reset();
+
+  unblockSubmitButton();
+
   validationHandler.reset();
-  uploadButtonElement.disabled = false;
 
   resetImageEditor();
   toggleModal();
 
-  document.removeEventListener('keydown', onDocumentKeydown);
+  document.removeEventListener('keydown', onEscKeydown);
 };
 
-function onDocumentKeydown(evt) {
-  if (isEscKey(evt) && document.activeElement !== hashtagsInputElement && document.activeElement !== descriptionInputElement) {
+function onEscKeydown (evt) {
+  if (isEscKey(evt) && !document.body.classList.contains('notification-open') && document.activeElement !== hashtagsInputElement && document.activeElement !== descriptionInputElement) {
     evt.preventDefault();
-
     closeForm();
   }
 }
@@ -56,7 +67,11 @@ const onUploadFormSubmit = (evt) => {
   evt.preventDefault();
 
   if (validationHandler.validate()) {
-    uploadForm.submit();
+    blockSubmitButton();
+    sendData(new FormData(evt.target))
+      .then(onSendDataSuccess)
+      .catch(onSendDataError)
+      .finally(unblockSubmitButton);
   }
 };
 
@@ -69,4 +84,4 @@ const initUploadForm = () => {
   initImageEditor();
 };
 
-export { initUploadForm };
+export { initUploadForm, closeForm };
