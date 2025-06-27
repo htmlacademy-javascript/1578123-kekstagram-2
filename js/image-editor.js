@@ -96,7 +96,7 @@ function onScaleControlElementClick (evt) {
 }
 
 const initSlider = () => {
-  sliderContainer.style.display = 'none';
+  sliderContainer.classList.add('visually-hidden');
 
   noUiSlider.create(sliderElement, {
     range: {
@@ -107,7 +107,7 @@ const initSlider = () => {
     step: SliderValue.STEP,
     connect: 'lower',
     format: {
-      to: (value) => value.toFixed(parseInt(value, 10) ? 0 : 1),
+      to: (value) => value.toFixed(Number.isInteger(value) ? 0 : 1),
       from: (value) => parseFloat(value)
     },
   });
@@ -124,7 +124,7 @@ const initSlider = () => {
 
 const resetSlider = () => {
   activeEffect = null;
-  sliderContainer.style.display = 'none';
+  sliderContainer.classList.add('visually-hidden');
   scaleImage.style.filter = '';
 };
 
@@ -137,7 +137,7 @@ function onEffectClick () {
     return;
   }
 
-  sliderContainer.style.display = '';
+  sliderContainer.classList.remove('visually-hidden');
   sliderElement.noUiSlider.updateOptions(activeEffect.options);
   scaleImage.style.filter = activeEffect.setFilter(activeEffect.options.start);
 }
