@@ -1,4 +1,5 @@
 const MAIN_URI = 'https://31.javascript.htmlacademy.pro/kekstagram';
+const SUCCESS_STATUS = 200;
 
 const Method = {
   GET: 'GET',
@@ -18,7 +19,7 @@ const ErrorText = {
 const load = (route, errorText, method = Method.GET, body = null) =>
   fetch(`${MAIN_URI}${route}`, {method, body})
     .then((response) => {
-      if (!response.ok) {
+      if (!response.status === SUCCESS_STATUS) {
         throw new Error();
       }
 

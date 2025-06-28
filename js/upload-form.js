@@ -7,8 +7,6 @@ import { onSendDataSuccess, onSendDataError } from './notifications.js';
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadInputElement = uploadForm.querySelector('.img-upload__input');
 const overlayElement = uploadForm.querySelector('.img-upload__overlay');
-const hashtagsInputElement = uploadForm.querySelector('.text__hashtags');
-const descriptionInputElement = uploadForm.querySelector('.text__description');
 const closeOverlayElement = uploadForm.querySelector('.img-upload__cancel');
 const uploadButtonElement = uploadForm.querySelector('.img-upload__submit');
 
@@ -49,7 +47,7 @@ const closeForm = () => {
 };
 
 function onEscKeydown (evt) {
-  if (isEscKey(evt) && !document.body.classList.contains('notification-open') && document.activeElement !== hashtagsInputElement && document.activeElement !== descriptionInputElement) {
+  if (isEscKey(evt) && !document.body.classList.contains('notification-open') && !evt.target.classList.contains('text__hashtags') && !evt.target.classList.contains('text__description')) {
     evt.preventDefault();
     closeForm();
   }

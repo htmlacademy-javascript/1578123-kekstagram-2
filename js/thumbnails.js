@@ -30,6 +30,7 @@ const renderThumbnails = (postData) => {
   const template = document.querySelector('#picture').content.querySelector('.picture');
   const fragment = createFragment(postData, template, renderThumbnailElement);
 
+  container.querySelectorAll('.picture').forEach((thumbnail) => thumbnail.remove());
   container.append(fragment);
 };
 
