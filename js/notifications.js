@@ -3,28 +3,86 @@ import { isEscKey } from './util.js';
 
 const SHOW_NOTIFICATION_TIME = 5000;
 
-let activeNotification;
+let toastElement;
+let toastTimeoutId;
+let notification;
 let notificationTrigger;
+
+const removeNotification = () => {
+  notificationTrigger = null;
+  notification.remove();
+
+  document.body.classList.toggle('notification-open');
+  document.removeEventListener('keydown', onEscKeydown);
+};
+
+const onNotificationClick = (evt) => {
+  if (evt.target === notification || evt.target === notificationTrigger) {
+    removeNotification();
+  }
+};
 
 const showNotification = (templateSelector, contentSelector, triggerSelector) => {
   const template = document.querySelector(templateSelector).content.querySelector(contentSelector);
 
-  activeNotification = template.cloneNode(true);
-  notificationTrigger = activeNotification.querySelector(triggerSelector);
+  notification = template.cloneNode(true);
+  notificationTrigger = notification.querySelector(triggerSelector);
 
-  activeNotification.addEventListener('click', onNotificationClick);
+  notification.addEventListener('click', onNotificationClick);
   document.addEventListener('keydown', onEscKeydown);
 
   document.body.classList.toggle('notification-open');
-  document.body.append(activeNotification);
+  document.body.append(notification);
 };
 
-const removeNotification = () => {
-  notificationTrigger = null;
-  activeNotification.remove();
+const showToast = (templateSelector, contentSelector, message = '') => {
+  const template = document.querySelector(templateSelector).content.querySelector(contentSelector);
+  toastElement = template.cloneNode(true);
 
-  document.body.classList.toggle('notification-open');
-  document.removeEventListener('keydown', onEscKeydown);
+  if (message) {
+    const messageElement = document.createElement('h2');
+    messageElement.classList.add(`${contentSelector}__title`);
+    messageElement.textContent = message;
+    toastElement.replaceChildren(messageElement);
+  }
+
+  document.body.append(toastElement);
+
+  toastTimeoutId = setTimeout(() => {
+    toastElement.remove();
+  }, SHOW_NOTIFICATION_TIME);
+};
+
+const removeToast = () => {
+  clearTimeout(toastTimeoutId);
+  toastElement.remove();
+};
+
+const showLoadDataError = () => {
+  showToast('#data-error','.data-error');
+};
+
+const showLoadFileSuccess = () => {
+  if (toastElement) {
+    removeToast();
+  }
+};
+
+const showLoadFileError = () => {
+  if (toastElement) {
+    removeToast();
+  }
+
+  showToast('#data-error','.data-error' ,'Неверный тип загружаемого файла');
+};
+
+const showSendDataSuccess = () => {
+  showNotification('#success', '.success', '.success__button');
+  closeForm();
+};
+
+const showSendDataError = () => {
+  showNotification('#error', '.error','.error__button');
 };
 
 function onEscKeydown (evt) {
@@ -33,29 +91,4 @@ function onEscKeydown (evt) {
   }
 }
 
-function onNotificationClick (evt) {
-  if (evt.target === activeNotification || evt.target === notificationTrigger) {
-    removeNotification();
-  }
-}
-
-const onLoadDataError = () => {
-  const template = document.querySelector('#data-error').content.querySelector('.data-error');
-  const errorElement = template.cloneNode(true);
-  document.body.append(errorElement);
-
-  setTimeout(() => {
-    errorElement.remove();
-  }, SHOW_NOTIFICATION_TIME);
-};
-
-const onSendDataSuccess = () => {
-  showNotification('#success', '.success', '.success__button');
-  closeForm();
-};
-
-const onSendDataError = () => {
-  showNotification('#error', '.error','.error__button');
-};
-
-export { onLoadDataError, onSendDataSuccess, onSendDataError};
+export { showLoadDataError, showSendDataSuccess, showSendDataError, showLoadFileSuccess, showLoadFileError };
