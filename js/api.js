@@ -19,7 +19,7 @@ const ErrorText = {
 const load = (route, errorText, method = Method.GET, body = null) =>
   fetch(`${MAIN_URI}${route}`, {method, body})
     .then((response) => {
-      if (!response.status === SUCCESS_STATUS) {
+      if (response.status !== SUCCESS_STATUS) {
         throw new Error();
       }
 

@@ -4,8 +4,6 @@ import { debounce } from './util.js';
 const RANDOM_POSTS_COUNT = 10;
 const RENDER_DELAY = 500;
 
-const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
-
 const Filters = {
   DEFAULT: 'filter-default',
   RANDOM: 'filter-random',
@@ -13,23 +11,24 @@ const Filters = {
 };
 
 const FilterFunctions = {
-  showDefault: (array) => array.slice(),
-  showRandom: (array) => array.toSorted(() => 0.5 - Math.random()).slice(0, RANDOM_POSTS_COUNT),
-  showDiscussed: (array) => array.toSorted((a, b) => b.comments.length - a.comments.length)
+  showDefault: (items) => items.slice(),
+  showRandom: (items) => items.toSorted(() => 0.5 - Math.random()).slice(0, RANDOM_POSTS_COUNT),
+  showDiscussed: (items) => items.toSorted((a, b) => b.comments.length - a.comments.length)
 };
 
 const filtersSectionElement = document.querySelector('.img-filters');
 const filtersContainer = filtersSectionElement.querySelector('.img-filters__form');
 
-let activeButtonElement = filtersContainer.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
+let activeFilterElement = filtersContainer.querySelector('.img-filters__button--active');
+
 let posts = [];
 
-const renderThumbnailsWithDelay = debounce(renderThumbnails, RENDER_DELAY);
+const renderDebouncedThumbnails = debounce(renderThumbnails, RENDER_DELAY);
 
-const useFilter = (filter) => {
+const useFilter = (filterName) => {
   let sortFunction = FilterFunctions.showDefault;
 
-  switch (filter) {
+  switch (filterName) {
     case Filters.RANDOM:
       sortFunction = FilterFunctions.showRandom;
       break;
@@ -38,19 +37,18 @@ const useFilter = (filter) => {
       break;
   }
 
-  renderThumbnailsWithDelay(sortFunction(posts));
+  renderDebouncedThumbnails(sortFunction(posts));
 };
 
 const onFiltersContainerClick = (evt) => {
-  const targetButtonElement = evt.target.closest('.img-filters__button');
+  const targetFilterElement = evt.target.closest('.img-filters__button');
 
-  if (targetButtonElement && targetButtonElement !== activeButtonElement) {
-    activeButtonElement.classList.remove(ACTIVE_BUTTON_CLASS);
-    targetButtonElement.classList.add(ACTIVE_BUTTON_CLASS);
+  if (targetFilterElement && targetFilterElement !== activeFilterElement) {
+    activeFilterElement.classList.remove('img-filters__button--active');
+    targetFilterElement.classList.add('img-filters__button--active');
+    activeFilterElement = targetFilterElement;
 
-    activeButtonElement = targetButtonElement;
-
-    useFilter(targetButtonElement.id);
+    useFilter(targetFilterElement.id);
   }
 };
 

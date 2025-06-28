@@ -1,7 +1,7 @@
-export const createFragment = (data, template, cb) => {
+export const createFragment = (items, template, cb) => {
   const fragment = document.createDocumentFragment();
 
-  fragment.append(...data.map((element) => cb(element, template)));
+  fragment.append(...items.map((element) => cb(element, template)));
 
   return fragment;
 };

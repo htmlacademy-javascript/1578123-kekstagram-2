@@ -1,5 +1,5 @@
 import { getData } from './api.js';
-import { onLoadDataError } from './notifications.js';
+import { showLoadDataError } from './notifications.js';
 import { initFilters } from './posts-filter.js';
 import { renderThumbnails } from './thumbnails.js';
 import {initUploadForm} from './upload-form.js';
@@ -13,6 +13,6 @@ const displayData = (data) => {
 
 getData()
   .then((data) => displayData(data.slice()))
-  .catch((onLoadDataError));
+  .catch((showLoadDataError));
 
 

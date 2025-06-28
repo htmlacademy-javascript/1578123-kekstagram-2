@@ -1,5 +1,6 @@
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_DESCRIPTION_LENGTH = 140;
+const HASHTAG_REGEXP = /^#[a-zа-яё0-9]{1,19}$/i;
 
 const HashtagLength = {
   MIN: 2,
@@ -14,7 +15,7 @@ const uploadButtonElement = uploadForm.querySelector('.img-upload__submit');
 let validationHandler;
 
 const validationManager = {
-  handleValidation() {
+  validate() {
     return new Pristine(
       uploadForm,
       {
@@ -48,7 +49,6 @@ const validateHashtags = (value) => {
   }
 
   const hashtags = value.toLowerCase().trim().split(/\s+/);
-  const hashtagRegexp = /^#[a-zа-яё0-9]{1,19}$/i;
   const rules = [
     {
       check: hashtags.some((item) => item.indexOf('#', 1) >= 1),
@@ -75,7 +75,7 @@ const validateHashtags = (value) => {
       error: `Нельзя указывать больше ${MAX_HASHTAGS_COUNT} хэштегов`
     },
     {
-      check: hashtags.some((item) => !hashtagRegexp.test(item)),
+      check: hashtags.some((item) => !HASHTAG_REGEXP.test(item)),
       error: 'Хэштег содержит недопустимые символы'
     }
   ];
@@ -97,7 +97,7 @@ const onTextInput = () => {
 };
 
 const initValidator = () => {
-  validationHandler = validationManager.handleValidation();
+  validationHandler = validationManager.validate();
 
   validationHandler.addValidator(descriptionInputElement, validateDescription, getDescriptionErrorMessage);
   validationHandler.addValidator(hashtagsInputElement, validateHashtags, getHashtagsErrorMessage);
